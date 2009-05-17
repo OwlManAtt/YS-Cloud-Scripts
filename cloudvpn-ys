@@ -1,0 +1,76 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:		cloudvpn	
+# Required-Start:	$syslog
+# Required-Stop:	$syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:		1
+# Short-Description: 	Yasashii Syndictate cloud VPN launcher	
+### END INIT INFO
+
+set -e
+
+# /etc/init.d/cloudvpn-ys: start and stop the Syndictae VPN cloud mesher.
+cloud=/usr/local/bin/cloud;
+ether=/usr/local/bin/ether;
+CLOUD_CONFIGS=/etc/cloudvpn/default.cvpn
+
+test -x $CLOUD || exit 0
+test -x $ETHER || exit 0
+
+. /lib/lsb/init-functions
+
+# Are we running from init?
+run_by_init() {
+    ([ "$previous" ] && [ "$runlevel" ]) || [ "$runlevel" = S ]
+}
+
+cloudvpn_start() {
+    SOCK_FILE='/var/run/cloudvpn/gate.sock';	
+    if test -f "${SOCK_FILE}"; then
+	echo $SOCK_FILE;
+    fi
+    
+    $CLOUD_CONFIGS > /dev/null &
+    disown %1
+    sleep 3s
+
+    $ether -gate /var/run/cloudvpn/gate.sock > /dev/null & 
+    disown %1
+    sleep 1s
+
+    ifconfig tap0 up
+}
+
+cloudvpn_stop() {
+    # Violence is the answer to so many problems...
+    ifconfig tap0 down;
+    killall ether;
+    killall -u cloudvpn;
+}
+
+case "$1" in
+  start)
+	log_daemon_msg "Starting Syndicate VPN cloud..." "cloundvpn"
+	cloudvpn_start $CLOUD_CONFIGS	
+	log_end_msg 0
+	;;
+  stop)
+	log_daemon_msg "Stopping Syndicate VPN cloud..." "cloudvpn"
+	cloudvpn_stop $CLOUD_CONFIGS
+	log_end_msg 0
+	;;
+
+  restart)
+	log_daemon_msg "Restarting Syndicate VPN cloud..." "cloudvpn"
+	cloudvpn_stop $CLOUD_CONFIGS
+	cloudvpn_start $CLOUD_CONFIGS
+	log_end_msg 0
+	;;
+  *)
+	log_action_msg "Usage: /etc/init.d/cloudvpn-ys {start|stop|restart}"
+	exit 1
+esac
+
+exit 0

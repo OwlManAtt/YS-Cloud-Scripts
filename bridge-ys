@@ -1,0 +1,42 @@
+#!/bin/bash
+. /lib/lsb/init-functions
+
+br="br0"
+tap="tap0"
+eth="eth1"
+eth_ip="10.0.16.1"
+eth_netmask="255.255.0.0"
+eth_broadcast="10.0.255.255"
+
+case "$1" in
+start|force-reload)
+  log_begin_msg "Initializing interfaces..."
+
+  /usr/sbin/brctl addbr ${br}
+  /usr/sbin/brctl addif ${br} ${eth}
+  /usr/sbin/brctl addif ${br} ${tap}
+  
+  /sbin/ifconfig ${tap} 0.0.0.0 promisc up
+  /sbin/ifconfig ${eth} 0.0.0.0 promisc up
+  
+  /sbin/ifconfig ${br} ${eth_ip} netmask ${eth_netmask} broadcast ${eth_broadcast}
+  
+  log_end_msg $?
+;;
+stop)
+  log_begin_msg "Tearing down interfaces..."
+  
+  /sbin/ifconfig ${br} down
+  /usr/sbin/brctl delbr ${br}
+  
+  # Reset the LAN interface.
+  /sbin/ifdown ${eth}
+  /sbin/ifup ${eth}
+
+  log_end_msg $?
+;;
+*)
+  log_begin_msg "Usage: /etc/init.d/ys-bridge {start|stop|force-reload}"
+  
+  exit 1
+esac
