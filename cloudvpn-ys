@@ -29,8 +29,14 @@ run_by_init() {
 cloudvpn_start() {
     SOCK_FILE='/var/run/cloudvpn/gate.sock';	
     if test -f "${SOCK_FILE}"; then
-	echo $SOCK_FILE;
+	rm $SOCK_FILE;	
     fi
+
+    SOCK_DIR='/var/run/cloudvpn';
+    if test ! -d "${SOCK_DIR}"; then
+        mkdir $SOCK_DIR;
+	chown cloudvpn:cloudvpn $SOCK_DIR;
+    fi;
     
     $CLOUD_CONFIGS > /dev/null &
     disown %1
