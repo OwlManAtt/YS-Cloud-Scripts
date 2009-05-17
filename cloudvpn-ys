@@ -6,12 +6,12 @@
 # Required-Stop:	$syslog
 # Default-Start:	2 3 4 5
 # Default-Stop:		1
-# Short-Description: 	Yasashii Syndictate cloud VPN launcher	
+# Short-Description: 	Yasashii Syndicate cloud VPN launcher	
 ### END INIT INFO
 
 set -e
 
-# /etc/init.d/cloudvpn-ys: start and stop the Syndictae VPN cloud mesher.
+# /etc/init.d/cloudvpn-ys: start and stop the Syndicate cloud mesher.
 cloud=/usr/local/bin/cloud;
 ether=/usr/local/bin/ether;
 CLOUD_CONFIGS=/etc/cloudvpn/default.cvpn
