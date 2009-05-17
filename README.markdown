@@ -15,5 +15,5 @@ Installation
 
 Under Ubuntu, copy the scripts to /etc/init.d and run these commands:
 
-	sudo update-rc.d cloudvpn-ys defaults 80 20
-	sudo update-rc.d bridge-ys defaults 90 10
+	sudo update-rc.d bridge-ys defaults 80 20
+	sudo update-rc.d cloudvpn-ys defaults 90 10

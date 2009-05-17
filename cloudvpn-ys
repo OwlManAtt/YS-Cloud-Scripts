@@ -40,11 +40,13 @@ cloudvpn_start() {
     disown %1
     sleep 1s
 
-    ifconfig tap0 up
+    /usr/sbin/brctl addif br0 tap0 
+    /sbin/ifconfig tap0 0.0.0.0 promisc up
 }
 
 cloudvpn_stop() {
     # Violence is the answer to so many problems...
+    /usr/sbin/brctl delif br0 tap0;
     ifconfig tap0 down;
     killall ether;
     killall -u cloudvpn;
