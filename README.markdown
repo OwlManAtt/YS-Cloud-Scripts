@@ -7,8 +7,8 @@ Syndicate's CloudVPN deployment.
 Files
 ----------
 
-cloudvpn-ys = bring up the client and the tap interface
-brige-ys = br0 setup (make sure shorewall is configured for br0 and not eth1 or shit breaks)
+* cloudvpn-ys = bring up the client and the tap interface
+* brige-ys = br0 setup (make sure shorewall is configured for br0 and not eth1 or shit breaks)
 
 Installation
 ---------------
